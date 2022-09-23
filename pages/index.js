@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import Script from "next/script";
 import clientPromise from "../lib/mongodb";
 import { getData } from "./api/page";
 import NavBar from "../components/navbar";
@@ -46,6 +47,21 @@ export default function Home({ isConnected, data }) {
 	];
 	return (
 		<div>
+			<Script
+				strategy="lazyOnload"
+				src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}`}
+			/>
+
+			<Script strategy="lazyOnload">
+				{`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS}', {
+            page_path: window.location.pathname,
+            });
+        `}
+			</Script>
 			<Head>
 				<title>
 					{(data && data.pageTitle) || process.env.DEFAULT_PAGE_TITLE}
@@ -57,14 +73,6 @@ export default function Home({ isConnected, data }) {
 					}
 				/>
 				<link rel="icon" href="/favicon.ico" />
-				<script
-					async
-					src="https://www.googletagmanager.com/gtag/js?id=G-C5131E6ZWT"></script>
-				<script>
-					window.dataLayer = window.dataLayer || []; function gtag()
-					{dataLayer.push(arguments)}
-					gtag('js', new Date()); gtag('config', 'G-C5131E6ZWT');
-				</script>
 			</Head>
 			{!isConnected && (
 				<div className="container mx-auto h-screen flex items-center justify-center font-bold">
